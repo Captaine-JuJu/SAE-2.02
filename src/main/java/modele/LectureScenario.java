@@ -1,26 +1,126 @@
 package modele;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
 public class LectureScenario {
-    public static Scenario LectureScenario(File fichier) throws IDException, FileNotFoundException {
-        Scenario scenario = new Scenario();
+    public static List[] lectureScenario(String scenario) throws IDException, FileNotFoundException {
+        File file = new File("Scenario" + File.separator + scenario);
 
-        Scanner scannerFile = new Scanner(fichier);
+//        Scenario scenario = new Scenario();
+
+        Scanner scannerFile = new Scanner(file);
         Scanner scannerLine;
+        ArrayList<String> listeVendeur = new ArrayList<>();
+        ArrayList<String> listeAcheteur = new ArrayList<>();
 
         while(scannerFile.hasNextLine()){
             String line = scannerFile.nextLine();
             scannerLine = new Scanner(line).useDelimiter(" ");
             String vendeur = scannerLine.next();
+            listeVendeur.add(vendeur);
             scannerLine.next(); // "->"
             String acheteur = scannerLine.next();
+            listeAcheteur.add(acheteur);
             System.out.println(vendeur + "->" + acheteur);
             scannerLine.close();
         }
         scannerFile.close();
-        return scenario;
+        return new List[]{listeVendeur, listeAcheteur};
     }
+
+//    public static TreeMap<String, String> lectureVilleMembre() throws IDException, FileNotFoundException {
+//        File file = new File("Membre" + File.separator + "membres_APPLI.txt");
+//
+//        Scanner scannerFile = new Scanner(file);
+//        Scanner scannerLine;
+//        TreeMap<String, String> membreVille = new TreeMap<>();
+//
+//        while(scannerFile.hasNextLine()){
+//            String line = scannerFile.nextLine();
+//            scannerLine = new Scanner(line).useDelimiter(" ");
+//            String membre = scannerLine.next();
+//            String ville = scannerLine.next();
+//            membreVille.put(membre, ville);
+//            //System.out.println(membre + "->" + ville);
+//            scannerLine.close();
+//        }
+//        scannerFile.close();
+//        System.out.println(membreVille);
+//        return membreVille;
+//    }
+
+    public static Map lectureVilleMembreCible(ArrayList<String> liste) throws IDException, FileNotFoundException {
+        File file = new File("Membre" + File.separator + "membres_APPLI.txt");
+
+        Scanner scannerFile = new Scanner(file);
+        Scanner scannerLine;
+        Map<String, String> membreVille = new HashMap<>();
+        Map<String, String> membreVilleCible = new HashMap<>();
+
+        while(scannerFile.hasNextLine()){
+            String line = scannerFile.nextLine();
+            scannerLine = new Scanner(line).useDelimiter(" ");
+            String membre = scannerLine.next();
+            String ville = scannerLine.next();
+            membreVille.put(membre, ville);
+            //System.out.println(membre + "->" + ville);
+            scannerLine.close();
+        }
+
+        for (int i = 0; i < liste.size(); i++) {
+            if (membreVille.containsKey(liste.get(i))) {
+                membreVilleCible.put(liste.get(i), membreVille.get(liste.get(i)));
+            }
+        }
+
+        scannerFile.close();
+        System.out.println(membreVilleCible);
+        return membreVilleCible;
+    }
+
+    public static Map regroupementParVille(ArrayList<String> membreVille) throws IDException, FileNotFoundException {
+        Map regroupementVille = lectureVilleMembreCible(membreVille);
+        Map<String, ArrayList> regroupementVilleCible = new HashMap<>();
+
+        for (int i = 0; i < membreVille.size(); i++) {
+            String ville = regroupementVille.get(membreVille.get(i)).toString();
+            if (!regroupementVilleCible.containsKey(ville)) {  
+                regroupementVilleCible.put(ville, new ArrayList<>());
+            }
+            regroupementVilleCible.get(regroupementVille.get(membreVille.get(i))).add(membreVille.get(i));
+        }
+        return regroupementVilleCible;
+    }
+
+    public static ArrayList<Map> regrouperParVille(String scenario) throws IDException, FileNotFoundException {
+        List[] acheteurVendeur = lectureScenario(scenario);
+        List achteurL = acheteurVendeur[0];
+        List vendeurL = acheteurVendeur[1];
+
+        ArrayList<String> achteur = new ArrayList<>();
+        ArrayList<String> vendeur = new ArrayList<>();
+
+        for (int i = 0; i < achteurL.size(); i++) {
+            achteur.add(achteurL.get(i).toString());
+            vendeur.add(vendeurL.get(i).toString());
+        }
+        Map<String, ArrayList<String>> ListeVilleAcheteur;
+        Map<String, ArrayList<String>> ListeVilleVendeur;
+        ListeVilleAcheteur = regroupementParVille(achteur);
+        ListeVilleVendeur = regroupementParVille(vendeur);
+
+        ArrayList<Map> regroupementVille = new ArrayList<>();
+        regroupementVille.add(ListeVilleAcheteur);
+        regroupementVille.add(ListeVilleVendeur);
+
+        return regroupementVille;
+    }
+
+//    public static Map
+
+
 }

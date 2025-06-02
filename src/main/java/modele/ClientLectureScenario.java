@@ -1,13 +1,19 @@
 package modele;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class ClientLectureScenario {
-    public static void main(String args[]) throws IDException, FileNotFoundException {
-        File scenario0 = new File("Scénario"+File.separator+"scenario_0");
-        LectureScenario lectureScenario = new LectureScenario();
-        System.out.println(lectureScenario.LectureScenario(scenario0));
+    static ArrayList<String> liste = new ArrayList<>();
+    public static void main(String[] args) throws FileNotFoundException, IDException {
+
+        liste.add("Psykokwak");
+        liste.add("Jungko");
+        liste.add("Méditikka");
+        liste.add("Spinda");
+
+        System.out.println(LectureScenario.regrouperParVille("scenario_0.txt"));
     }
+
 }
