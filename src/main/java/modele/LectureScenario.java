@@ -1,6 +1,5 @@
 package modele;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -120,7 +119,53 @@ public class LectureScenario {
         return regroupementVille;
     }
 
-//    public static Map
+    public static List[] remplacementNomVille(String scenario) throws IDException, FileNotFoundException {
+        List[] acheteurVendeur = lectureScenario(scenario);
+        List<String> vendeurL = acheteurVendeur[0];
+        List<String> acheteurL = acheteurVendeur[1];
 
+        ArrayList<String> tousLesMembres = new ArrayList<>();
+        tousLesMembres.addAll(vendeurL);
+        tousLesMembres.addAll(acheteurL);
+
+        Map<String, String> ListeVilleAcheteur = lectureVilleMembreCible(tousLesMembres);
+        List<String> vendeursVille = new ArrayList<>();
+        List<String> acheteursVille = new ArrayList<>();
+
+        for (String vendeur : vendeurL) {
+            vendeursVille.add(ListeVilleAcheteur.get(vendeur));
+        }
+
+        for (String acheteur : acheteurL) {
+            acheteursVille.add(ListeVilleAcheteur.get(acheteur));
+        }
+
+        return new List[]{vendeursVille, acheteursVille};
+    }
+
+    public static String[][] grapheAvecSuffixes(String scenario) throws IDException, FileNotFoundException {
+        List[] donnees = lectureScenario(scenario);
+        List<String> vendeurs = donnees[0];
+        List<String> acheteurs = donnees[1];
+
+        ArrayList<String> tous = new ArrayList<>();
+        tous.addAll(vendeurs);
+        tous.addAll(acheteurs);
+
+        Map<String, String> membreVersVille = lectureVilleMembreCible(tous);
+        Map<String, List<String>> graphe = new HashMap<>();
+
+        for (int i = 0; i < vendeurs.size(); i++) {
+            String villeVendeur = membreVersVille.get(vendeurs.get(i));
+            String villeAcheteur = membreVersVille.get(acheteurs.get(i));
+
+            String cle = villeVendeur + "+";
+            String valeur = villeAcheteur + "-";
+
+            graphe.computeIfAbsent(cle, k -> new ArrayList<>()).add(valeur);
+        }
+
+        return graphe;
+    }
 
 }

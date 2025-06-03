@@ -1,6 +1,5 @@
 package modele;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -8,7 +7,7 @@ import java.util.TreeSet;
 public class Graphe {
     private TreeMap<Integer, TreeSet<Integer>> chMapVoisins;
 
-    public Graphe(int [][] tabVoisins) {
+    public Graphe(int[][] tabVoisins) {
         chMapVoisins = new TreeMap<>();
         for (int indiceSommet = 0; indiceSommet < tabVoisins.length; indiceSommet++) {
             TreeSet<Integer> voisins = new TreeSet<>();

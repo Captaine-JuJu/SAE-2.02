@@ -17,7 +17,7 @@ public class PokeApp extends Application {
         for (File f : premiercss) {
             scene.getStylesheets().add(f.toURI().toString());
         }
-        stage.setTitle("Hello!");
+        stage.setTitle("PokeApp");
         stage.setScene(scene);
         stage.show();
     }

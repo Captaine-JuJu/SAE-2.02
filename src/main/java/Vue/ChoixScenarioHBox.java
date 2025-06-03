@@ -7,10 +7,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 import modele.IDException;
 import modele.LectureScenario;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static modele.LectureScenario.remplacementNomVille;
 
 public class ChoixScenarioHBox extends VBox {
     static File repertoire = new File("Scenario");
@@ -33,7 +36,8 @@ public class ChoixScenarioHBox extends VBox {
                 System.out.println("Valider");
                 System.out.println(choixValider);
                 try {
-                    System.out.println(LectureScenario.regrouperParVille(choixValider));
+                    List[] acheteursVendeursVille = remplacementNomVille(choixValider);
+                    System.out.println(Arrays.deepToString(acheteursVendeursVille));
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 } catch (IDException e) {
