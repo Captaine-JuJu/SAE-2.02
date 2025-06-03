@@ -143,7 +143,7 @@ public class LectureScenario {
         return new List[]{vendeursVille, acheteursVille};
     }
 
-    public static String[][] grapheAvecSuffixes(String scenario) throws IDException, FileNotFoundException {
+    public static Map<String, List<String>> grapheAvecSuffixes(String scenario) throws IDException, FileNotFoundException {
         List[] donnees = lectureScenario(scenario);
         List<String> vendeurs = donnees[0];
         List<String> acheteurs = donnees[1];
@@ -153,7 +153,7 @@ public class LectureScenario {
         tous.addAll(acheteurs);
 
         Map<String, String> membreVersVille = lectureVilleMembreCible(tous);
-        Map<String, List<String>> graphe = new HashMap<>();
+        Map<String, List<String>> grapheTemp = new HashMap<>();
 
         for (int i = 0; i < vendeurs.size(); i++) {
             String villeVendeur = membreVersVille.get(vendeurs.get(i));
@@ -162,10 +162,68 @@ public class LectureScenario {
             String cle = villeVendeur + "+";
             String valeur = villeAcheteur + "-";
 
-            graphe.computeIfAbsent(cle, k -> new ArrayList<>()).add(valeur);
+            grapheTemp.computeIfAbsent(cle, k -> new ArrayList<>()).add(valeur);
         }
 
+        Set<String> villesAcheteursAvecMoins = new HashSet<>();
+        for (String acheteur : acheteurs) {
+            String ville = membreVersVille.get(acheteur);
+            villesAcheteursAvecMoins.add(ville + "-");
+        }
+
+        Map<String, List<String>> graphe = new LinkedHashMap<>();
+        graphe.put("Vélizy+", new ArrayList<>(villesAcheteursAvecMoins));
+        graphe.putAll(grapheTemp);
+
+        for (String villeAcheteurMoins : villesAcheteursAvecMoins) {
+            List<String> successeurs = graphe.computeIfAbsent(villeAcheteurMoins, k -> new ArrayList<>());
+            if (!successeurs.contains("Vélizy-")) {
+                successeurs.add("Vélizy-");
+            }
+        }
+
+        graphe.put("Vélizy-", new ArrayList<>());
         return graphe;
     }
+
+
+
+    public static int[][] grapheAvecSuffixesEnTabVoisins(String scenario) throws IDException, FileNotFoundException {
+        Map<String, List<String>> graphe = grapheAvecSuffixes(scenario);
+
+        Set<String> sommets = new HashSet<>();
+        sommets.addAll(graphe.keySet());
+        for (List<String> voisins : graphe.values()) {
+            sommets.addAll(voisins);
+        }
+
+        List<String> sommetList = new ArrayList<>(sommets);
+        Collections.sort(sommetList); // Optionnel : tri pour cohérence
+        Map<String, Integer> sommetVersIndex = new HashMap<>();
+        for (int i = 0; i < sommetList.size(); i++) {
+            sommetVersIndex.put(sommetList.get(i), i);
+        }
+
+        int[][] tabVoisins = new int[sommetList.size()][];
+
+        for (int i = 0; i < sommetList.size(); i++) {
+            String sommet = sommetList.get(i);
+            List<String> voisins = graphe.getOrDefault(sommet, new ArrayList<>());
+
+            int[] ligne = new int[voisins.size()];
+            for (int j = 0; j < voisins.size(); j++) {
+                ligne[j] = sommetVersIndex.get(voisins.get(j));
+            }
+            tabVoisins[i] = ligne;
+        }
+
+        System.out.println("Index des sommets :");
+        for (int i = 0; i < sommetList.size(); i++) {
+            System.out.println(i + ": " + sommetList.get(i));
+        }
+
+        return tabVoisins;
+    }
+
 
 }

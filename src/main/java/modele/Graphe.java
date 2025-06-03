@@ -1,5 +1,6 @@
 package modele;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -31,13 +32,16 @@ public class Graphe {
         return chMapVoisins.get(indiceSommet).size();
     }
 
-    public int taille(){
+    public int taille() {
         int taille = 0;
-        for (int indiceSommet = 0 ; indiceSommet < chMapVoisins.keySet().size(); indiceSommet++) {
-            taille += chMapVoisins.get(indiceSommet).size();
+        for (TreeSet<Integer> voisins : chMapVoisins.values()) {
+            if (voisins != null) {
+                taille += voisins.size();
+            }
         }
-        return taille / 2;
+        return taille;
     }
+
 
     public int degreeMax(){
         int degree = 0;
@@ -61,17 +65,24 @@ public class Graphe {
 
     public TreeMap<Integer, Integer> degreeEntrant() {
         TreeMap<Integer, Integer> degreeEntrants = new TreeMap<>();
-        for (int voisinE : chMapVoisins.keySet()) {
-            for (int voisinSommetE : chMapVoisins.get(voisinE)) {
-                if (chMapVoisins.get(voisinSommetE) == null)
-                    degreeEntrants.put(voisinE, 1);
-                else {
-                    degreeEntrants.put(voisinSommetE, degreeEntrants.get(voisinSommetE) + 1);
+
+        for (Integer sommet : chMapVoisins.keySet()) {
+            degreeEntrants.put(sommet, 0);
+        }
+
+        for (Integer sommet : chMapVoisins.keySet()) {
+            TreeSet<Integer> voisins = chMapVoisins.get(sommet);
+            if (voisins != null) {
+                for (Integer voisin : voisins) {
+                    // Incrémente le degré entrant du voisin
+                    degreeEntrants.put(voisin, degreeEntrants.getOrDefault(voisin, 0) + 1);
                 }
             }
         }
+
         return degreeEntrants;
     }
+
 
     public String toString() {
         String res = new String();

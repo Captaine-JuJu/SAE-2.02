@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
+import modele.Graphe;
 import modele.IDException;
 import modele.LectureScenario;
 import java.io.File;
@@ -36,8 +37,10 @@ public class ChoixScenarioHBox extends VBox {
                 System.out.println("Valider");
                 System.out.println(choixValider);
                 try {
-                    List[] acheteursVendeursVille = remplacementNomVille(choixValider);
-                    System.out.println(Arrays.deepToString(acheteursVendeursVille));
+                    int [] [] tabVoisinsVille = LectureScenario.grapheAvecSuffixesEnTabVoisins(choixValider);
+                    Graphe graphe = new Graphe(tabVoisinsVille);
+                    System.out.println(graphe.toString());
+                    System.out.println(graphe.degreeEntrant());
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 } catch (IDException e) {

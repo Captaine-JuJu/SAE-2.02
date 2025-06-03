@@ -18,7 +18,11 @@ public class ClientLectureScenario {
         liste.add("Spinda");
 
 
-        System.out.println(LectureScenario.grapheAvecSuffixes("scenario_0.txt"));
+        int [] [] tabVoisinsVille = LectureScenario.grapheAvecSuffixesEnTabVoisins("scenario_0.txt");
+        Graphe graphe = new Graphe(tabVoisinsVille);
+        System.out.println(graphe.toString());
+        System.out.println(graphe.degreeEntrant());
+//        System.out.println("ordre : " + graphe.ordre());
     }
 
 }
